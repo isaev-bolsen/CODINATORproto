@@ -22,6 +22,7 @@ namespace CODINATOR
             CB.addField<DateTime>("Date").InitExpression = new CodeObjectCreateExpression(typeof(DateTime), dateParameters);
             CB.CreateValuesEqualsMethod();
             CB.SerializeCs();
+            CB.SerializeVb();
             }
         }
     }

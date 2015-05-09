@@ -7,6 +7,7 @@ using System.CodeDom;
 using Microsoft.CSharp;
 using System.IO;
 using System.CodeDom.Compiler;
+using Microsoft.VisualBasic;
 
 namespace CODINATOR
     {
@@ -16,7 +17,7 @@ namespace CODINATOR
         private CodeNamespace Namespace;
         private CodeTypeDeclaration Class;
 
-        private CSharpCodeProvider provider;
+        private CodeDomProvider provider;
         private FileInfo resultingFile;
 
         public ClassBuilder(string NamespaceName, string className)
@@ -70,7 +71,16 @@ namespace CODINATOR
             provider = new CSharpCodeProvider();
             resultingFile = new FileInfo(Class.Name + ".cs");
             var writer = resultingFile.CreateText();
-            provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new CodeGeneratorOptions() { BracingStyle = "C", BlankLinesBetweenMembers = false });
+            provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new CodeGeneratorOptions() { BracingStyle = "C" });
+            writer.Close();
+            }
+
+        public void SerializeVb()
+            {
+            provider = new VBCodeProvider();
+            resultingFile = new FileInfo(Class.Name + ".vb");
+            var writer = resultingFile.CreateText();
+            provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new CodeGeneratorOptions() { BracingStyle = "C" });
             writer.Close();
             }
         }
