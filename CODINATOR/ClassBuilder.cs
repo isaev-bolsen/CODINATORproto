@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.CodeDom;
+using Microsoft.CSharp;
+using System.IO;
 
 namespace CODINATOR
     {
@@ -12,6 +14,9 @@ namespace CODINATOR
         private CodeCompileUnit ResultingSc;
         private CodeNamespace Namespace;
         private CodeTypeDeclaration Class;
+
+        private CSharpCodeProvider provider;
+        private FileInfo resultingFile;
 
         public ClassBuilder(string NamespaceName, string className)
             {
@@ -29,9 +34,14 @@ namespace CODINATOR
             Class.Members.Add(Field);
             }
 
-        public CodeCompileUnit GetResultingCompileUnit()
+        public void SerializeCs()
             {
-            return ResultingSc;
+            if (provider == null) provider = new CSharpCodeProvider();
+            if (resultingFile == null) resultingFile = new FileInfo(Class.Name + ".cs");
+            var writer = resultingFile.CreateText();
+            provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new System.CodeDom.Compiler.CodeGeneratorOptions());
+            writer.Close();
             }
         }
     }
+
