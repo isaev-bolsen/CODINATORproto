@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.CodeDom;
 using Microsoft.CSharp;
 using System.IO;
+using System.CodeDom.Compiler;
 
 namespace CODINATOR
     {
@@ -40,7 +41,7 @@ namespace CODINATOR
             if (provider == null) provider = new CSharpCodeProvider();
             if (resultingFile == null) resultingFile = new FileInfo(Class.Name + ".cs");
             var writer = resultingFile.CreateText();
-            provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new System.CodeDom.Compiler.CodeGeneratorOptions());
+            provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new CodeGeneratorOptions() { BracingStyle = "C", BlankLinesBetweenMembers = false });
             writer.Close();
             }
         }
