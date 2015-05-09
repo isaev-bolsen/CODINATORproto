@@ -20,6 +20,7 @@ namespace CODINATOR
             dateParameters[2] = new CodePrimitiveExpression(DateTime.Now.Day);
 
             CB.addField<DateTime>("Date").InitExpression = new CodeObjectCreateExpression(typeof(DateTime), dateParameters);
+            CB.CreateValuesEqualsMethod();
             CB.SerializeCs();
             }
         }

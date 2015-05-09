@@ -36,10 +36,44 @@ namespace CODINATOR
             return Field;
             }
 
+        private CodeBinaryOperatorExpression getEqualityOperation(string var1, string var2)
+            {
+            return new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(var1), CodeBinaryOperatorType.ValueEquality, new CodeVariableReferenceExpression(var2));
+            }
+
+        public void CreateValuesEqualsMethod()
+            {
+            CodeMemberMethod EqualsMethod = new CodeMemberMethod();
+            EqualsMethod.Name = "EqualsByValues";
+            EqualsMethod.ReturnType = new CodeTypeReference(typeof(bool));
+
+            CodeBinaryOperatorExpression AND=null;
+
+            foreach (var member in Class.Members)
+                {
+                var field = member as CodeMemberField;
+                if (field == null) continue;
+                var parameter = new CodeParameterDeclarationExpression(field.Type, "Expected" + field.Name);
+                EqualsMethod.Parameters.Add(parameter);
+                if (AND == null)
+                    {
+                    AND = getEqualityOperation(field.Name, parameter.Name);
+                    }
+                else
+                    {
+                    AND = new CodeBinaryOperatorExpression(AND, CodeBinaryOperatorType.BooleanAnd, getEqualityOperation(field.Name, parameter.Name));
+                    }
+                }
+
+            CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(AND);
+            EqualsMethod.Statements.Add(returnStatement);
+            Class.Members.Add(EqualsMethod);
+            }
+
         public void SerializeCs()
             {
-            if (provider == null) provider = new CSharpCodeProvider();
-            if (resultingFile == null) resultingFile = new FileInfo(Class.Name + ".cs");
+            provider = new CSharpCodeProvider();
+            resultingFile = new FileInfo(Class.Name + ".cs");
             var writer = resultingFile.CreateText();
             provider.GenerateCodeFromCompileUnit(ResultingSc, writer, new CodeGeneratorOptions() { BracingStyle = "C", BlankLinesBetweenMembers = false });
             writer.Close();
