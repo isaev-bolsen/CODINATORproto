@@ -47,7 +47,7 @@ namespace CODINATOR
             EqualsMethod.Name = "EqualsByValues";
             EqualsMethod.ReturnType = new CodeTypeReference(typeof(bool));
 
-            CodeBinaryOperatorExpression AND=null;
+            CodeBinaryOperatorExpression AND = null;
 
             foreach (var member in Class.Members)
                 {
@@ -55,14 +55,9 @@ namespace CODINATOR
                 if (field == null) continue;
                 var parameter = new CodeParameterDeclarationExpression(field.Type, "Expected" + field.Name);
                 EqualsMethod.Parameters.Add(parameter);
-                if (AND == null)
-                    {
-                    AND = getEqualityOperation(field.Name, parameter.Name);
-                    }
-                else
-                    {
-                    AND = new CodeBinaryOperatorExpression(AND, CodeBinaryOperatorType.BooleanAnd, getEqualityOperation(field.Name, parameter.Name));
-                    }
+
+                if (AND == null) AND = getEqualityOperation(field.Name, parameter.Name);
+                else AND = new CodeBinaryOperatorExpression(AND, CodeBinaryOperatorType.BooleanAnd, getEqualityOperation(field.Name, parameter.Name));
                 }
 
             CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(AND);
