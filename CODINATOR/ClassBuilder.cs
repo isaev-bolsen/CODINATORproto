@@ -28,10 +28,11 @@ namespace CODINATOR
             Namespace.Types.Add(Class);
             }
 
-        public void addField(Type fieldType, string name)
+        public CodeMemberField addField<T>(string name)
             {
-            CodeMemberField Field = new CodeMemberField(fieldType, name);
+            CodeMemberField Field = new CodeMemberField(typeof(T), name);
             Class.Members.Add(Field);
+            return Field;
             }
 
         public void SerializeCs()
